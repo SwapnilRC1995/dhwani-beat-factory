@@ -7,7 +7,7 @@ export default class Footer extends React.Component {
         <footer className="text-center text-white fixed-bottom footer-container">
             <div className="text-center p-3 footer-text">
                 © 2021 Copyright :
-                <a className="text-white" href="https://dhwaniacademy.in/"> Dhwani Academy of Percussion Music</a>
+                <a className="text-white footer-link" href="https://dhwaniacademy.in/"> Dhwani Academy of Percussion Music</a>
             </div>
         </footer>
     </div>

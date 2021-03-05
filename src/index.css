@@ -1,6 +1,6 @@
 @font-face {
-  font-family: 'DhwaniPoppins';
-  src: url(../src/style/poppins.woff2) format('woff2');
+  font-family: 'DhwaniAlegreya';
+  src: url(../src/style/alegreya.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 body {
@@ -30,9 +30,10 @@ body {
   color: #575857;
   font-size: 25px;
   font-weight: bold;
+  font-family: 'DhwaniAlegreya';
 }
 .generator-box, .matra-box{
-  background-color: #2b2b2b;
+  background-color: #2b2b2b47;
   color: white;
   padding: 3%;
   border-radius: 20px;
@@ -43,6 +44,8 @@ body {
 .input-label{
   font-size: 20px;
   font-weight: bold;
+  color: #222;
+  font-family: 'DhwaniAlegreya';
 }
 .position-drop-icon{
   position: absolute;
@@ -63,6 +66,7 @@ body {
   outline: none;
   background-color: #fff;
   border-radius: 5px;
+  font-family: 'DhwaniAlegreya';
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -73,17 +77,20 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 .btn-grey{
-  color: #1c2331 !important;
-  background-color: #fff !important;
+  color: #fff !important;
+  background-color: #222 !important;
   border-radius: 100px !important;
   font-weight: 700 !important;
   font-size: 18px !important;
+  box-shadow: 0px 0px 20px #3838389e;
+  font-family: 'DhwaniAlegreya';
 }
 .field-error-message{
   color: #d40922;
   font-size: 14px;
   letter-spacing: 1px;
   font-weight: bold;
+  font-family: 'DhwaniAlegreya';
 }
 .field-error-border{
   border-bottom: 5px solid #d40922 !important;
@@ -94,9 +101,22 @@ input[type=number] {
 }
 .footer-text{
   background-color: rgba(0, 0, 0, 0.2);
+  font-family: 'DhwaniAlegreya';
 }
 .width-fit-content{
   width: fit-content;
+}
+.bol-input:read-only{
+  background-color: #ffffff73;
+  cursor: not-allowed;
+}
+.table-heading{
+  font-size: 20px;
+  color: #222;
+  font-family: 'DhwaniAlegreya';
+}
+.footer-link{
+  text-decoration: none !important;
 }
 @media (max-width: 767px){
   .backdrop-image{
@@ -112,7 +132,7 @@ input[type=number] {
     margin: 0% 1%;
   } 
   .bol-input{
-    width: 165% !important;
+    width: 180% !important;
   }
 }
 @media (max-width: 360px){

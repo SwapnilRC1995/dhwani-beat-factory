@@ -69,15 +69,18 @@ export default class Generator extends React.Component {
     }
     handleChange = (event) => {
         if(this.state.isTaalSelected && event.target.value != null && event.target.value !== ""){
-            var id = parseInt(event.target.id.charAt(event.target.id.length-1))+1;
-            var modifiedId = event.target.id.substring(0,event.target.id.length-1).concat(id);
-            var selectedId = parseInt(event.target.id.charAt(event.target.id.length-1))-1;
-            $("#"+modifiedId).removeAttr("readonly");
-            this.state.bolEntered[selectedId] = event.target.value;
-            console.log(this.state.bolEntered);
-            this.setState({
-                bolEntered: this.state.bolEntered
-            })
+
+            var matches = event.target.id.match(/(\d+)/);
+            if(matches){
+                var id = parseInt(matches[0])+1;
+                var modifiedId =   event.target.id.replace(/\d+/g,'').concat(id);
+                var selectedId = parseInt(matches[0])-1;
+                $("#"+modifiedId).removeAttr("readonly").css('cursor', 'text');
+                this.state.bolEntered[selectedId] = event.target.value;
+                this.setState({
+                    bolEntered: this.state.bolEntered
+                })
+            }           
         }else{
             this.state.taals.find(data => {
                 if(event.target.value != null && data.name === event.target.value){
@@ -96,13 +99,12 @@ export default class Generator extends React.Component {
     handleSubmit = (event) => {
         event.preventDefault();
         if(this.state.isTaalSelected){
-            console.log(this.state.bolEntered); 
-            if(this.state.bolEntered !== null  && this.state.bolEntered.length === this.state.selectedTaalForm.matra){
+            if(this.state.bolEntered !== null  && this.state.bolEntered.length === parseInt(this.state.selectedTaalForm.matra)){
                 axios.post('/create-pdf', this.state)
                 .then(() => axios.get('/fetch-pdf', {responseType: 'blob'}))
                 .then((res) => {
                     const pdfBlob = new Blob([res.data], {type: 'application/pdf'});
-                    saveAs(pdfBlob, 'newPdf.pdf');
+                    saveAs(pdfBlob, `${this.state.selectedTaalForm.name}.pdf`);
                 })
                 .then(() => axios.get('/delete-pdf'))
             }else{
@@ -157,9 +159,9 @@ export default class Generator extends React.Component {
                                         
                                     }
                                     return(
-                                        <tr className="d-md-flex mb-3">
+                                        <tr className="d-md-flex mb-4 pb-2">
                                             <div className="d-md-inline-block">
-                                                <th className="pr-5">{`Step-${index+1}`}</th>
+                                                <th className="pr-5 table-heading">{`Step-${index+1}`}</th>
                                                 <br className="d-md-none d-block"/>
                                             </div>
                                             {items}
@@ -167,7 +169,7 @@ export default class Generator extends React.Component {
                                         </tr>
                                     )
                                 })}
-                                <tr className="d-md-flex justify-content-center ml-1 mr-5">
+                                <tr className="d-md-flex justify-content-center ml-1 mr-md-5 mr-1">
                                 <button type="submit" className="btn btn-grey col-md-6 col-12 d-flex align-items-center justify-content-center mb-md-0 mb-3" id="show-contact-us-form-third-step">Generate &amp; Download</button>
                                 </tr>
                             </table>                        
