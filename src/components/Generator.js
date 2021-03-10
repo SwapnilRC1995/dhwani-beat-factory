@@ -76,6 +76,7 @@ export default class Generator extends React.Component {
                 var modifiedId =   event.target.id.replace(/\d+/g,'').concat(id);
                 var selectedId = parseInt(matches[0])-1;
                 $("#"+modifiedId).removeAttr("readonly").css('cursor', 'text');
+                $("#"+modifiedId).attr("required","true");
                 this.state.bolEntered[selectedId] = event.target.value;
                 this.setState({
                     bolEntered: this.state.bolEntered
@@ -100,13 +101,16 @@ export default class Generator extends React.Component {
         event.preventDefault();
         if(this.state.isTaalSelected){
             if(this.state.bolEntered !== null  && this.state.bolEntered.length === parseInt(this.state.selectedTaalForm.matra)){
-                axios.post('/create-pdf', this.state)
+               axios.post('/create-pdf', this.state)
                 .then(() => axios.get('/fetch-pdf', {responseType: 'blob'}))
                 .then((res) => {
                     const pdfBlob = new Blob([res.data], {type: 'application/pdf'});
                     saveAs(pdfBlob, `${this.state.selectedTaalForm.name}.pdf`);
                 })
-                .then(() => axios.get('/delete-pdf'))
+                .then(() => {
+                    window.location.reload();
+                })
+                /*.then(() => axios.get('/delete-pdf'))*/
             }else{
                 console.log("No values entered")
             }
@@ -141,7 +145,7 @@ export default class Generator extends React.Component {
                                             items.push(
                                                 <div className="d-inline-block">
                                                     <td className={paddingClass}>
-                                                        <input type="text" id={`step-${stepIndex}`} name={stepIndex++} className="input-field bol-input" onBlur={this.handleChange}></input>
+                                                        <input type="text" id={`step-${stepIndex}`} name={stepIndex++} className="input-field bol-input" onBlur={this.handleChange} required></input>
                                                     </td>
                                                     <br className="d-md-none d-block"/>
                                                 </div>
@@ -161,7 +165,7 @@ export default class Generator extends React.Component {
                                     return(
                                         <tr className="d-md-flex mb-4 pb-2">
                                             <div className="d-md-inline-block">
-                                                <th className="pr-5 table-heading">{`Step-${index+1}`}</th>
+                                                <th className="pr-5 table-heading">{`Line-${index+1}`}</th>
                                                 <br className="d-md-none d-block"/>
                                             </div>
                                             {items}
