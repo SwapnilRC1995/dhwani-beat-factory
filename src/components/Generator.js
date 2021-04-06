@@ -2,8 +2,10 @@ import React from 'react';
 import $ from 'jquery';
 import axios from 'axios';
 import {saveAs} from 'file-saver';
+import { connect } from 'react-redux';
+import GenerateForm from './GenerateForm';
 
-export default class Generator extends React.Component {
+class Generator extends React.Component {
 
     constructor(){
         super();
@@ -31,7 +33,7 @@ export default class Generator extends React.Component {
             {
                 name: "Chaar taal ki sawari",
                 matra: "11",
-                step: [2,2,2,2,1,2]
+                step: [2,2,2,2,3]
             },
             {
                 name: "Jhaptaal",
@@ -64,24 +66,14 @@ export default class Generator extends React.Component {
                 matra: "",
                 step: []
             },
-            bolEntered: []
+            bolEntered: [],
+            generatorFormList: []
         }
+        this.handleAddGeneratorForm = this.handleAddGeneratorForm.bind(this);
+        this.handleRemoveGeneratorForm = this.handleRemoveGeneratorForm.bind(this);
     }
     handleChange = (event) => {
         if(this.state.isTaalSelected && event.target.value != null && event.target.value !== ""){
-
-            var matches = event.target.id.match(/(\d+)/);
-            if(matches){
-                var id = parseInt(matches[0])+1;
-                var modifiedId =   event.target.id.replace(/\d+/g,'').concat(id);
-                var selectedId = parseInt(matches[0])-1;
-                $("#"+modifiedId).removeAttr("readonly").css('cursor', 'text');
-                $("#"+modifiedId).attr("required","true");
-                this.state.bolEntered[selectedId] = event.target.value;
-                this.setState({
-                    bolEntered: this.state.bolEntered
-                })
-            }           
         }else{
             this.state.taals.find(data => {
                 if(event.target.value != null && data.name === event.target.value){
@@ -100,9 +92,16 @@ export default class Generator extends React.Component {
     handleSubmit = (event) => {
         event.preventDefault();
         if(this.state.isTaalSelected){
-            if(this.state.bolEntered !== null  && this.state.bolEntered.length === parseInt(this.state.selectedTaalForm.matra)){
-               axios.post('/create-pdf', this.state)
-                .then(() => axios.get('/fetch-pdf', {responseType: 'blob'}))
+            this.props.bolToProps.map((bol, index) => {
+                this.state.bolEntered[index] = bol;
+                return 0;
+            })
+            this.setState({
+                bolEntered: this.state.bolEntered
+            })
+            if(this.state.bolEntered !== null ){
+               axios.post('https://www.dhwanibeatfactoryclient.tk/create-pdf', this.state)
+                .then(() => axios.get('https://www.dhwanibeatfactoryclient.tk/fetch-pdf', {responseType: 'blob'}))
                 .then((res) => {
                     const pdfBlob = new Blob([res.data], {type: 'application/pdf'});
                     saveAs(pdfBlob, `${this.state.selectedTaalForm.name}.pdf`);
@@ -110,11 +109,10 @@ export default class Generator extends React.Component {
                 .then(() => {
                     window.location.reload();
                 })
-                /*.then(() => axios.get('/delete-pdf'))*/
+                .then(() => axios.get('https://www.dhwanibeatfactoryclient.tk/delete-pdf'))
             }else{
                 console.log("No values entered")
-            }
-            
+            }          
         }else{
             if($('#name').val() === null || $('#name').val() === ""){
                 $(".error-container").html('<i class="fa fa-times mr-2 field-error-message"></i><p class="field-error-message mb-0">Please enter the taal</p>');
@@ -126,58 +124,39 @@ export default class Generator extends React.Component {
             }
         }
     }
+    handleAddGeneratorForm(){
+        var counter = this.state.generatorFormList.length+1;
+        var stepIndex = (parseInt(this.state.selectedTaalForm.matra) * counter)+1;
+        this.setState({
+            generatorFormList: this.state.generatorFormList.concat(<GenerateForm counter={counter} stepIndex={stepIndex} selectedTaalForm={this.state.selectedTaalForm } handleBolEnteredFromSnippet={this.handleBolEnteredFromSnippet} border="form-border"/>)
+        });
+    }
+    handleRemoveGeneratorForm(){
+        console.log(this.state.generatorFormList.length);
+        this.setState({
+            generatorFormList: this.state.generatorFormList.splice(1, 1)
+        });
+    }
     render(){
     if(this.state.isTaalSelected){
-        var stepIndex = 1;
         return (
             <div className="my-3 py-3">
                 <div className="container mt-3">
                     <div className="d-flex justify-content-center">
-                        <form onSubmit={this.handleSubmit} className="matra-box">
-                            <table className="d-flex flex-column width-fit-content">
-                                {this.state.selectedTaalForm.step.map((step,index) => {
-                                    var items = [];
-                                    for (let i = 0; i < step; i++) {
-                                        if(i !== step-1){
-                                            var paddingClass="pr-3";
-                                        } 
-                                        if(stepIndex === 1){
-                                            items.push(
-                                                <div className="d-inline-block">
-                                                    <td className={paddingClass}>
-                                                        <input type="text" id={`step-${stepIndex}`} name={stepIndex++} className="input-field bol-input" onBlur={this.handleChange} required></input>
-                                                    </td>
-                                                    <br className="d-md-none d-block"/>
-                                                </div>
-                                            );
-                                        }else{
-                                            items.push(
-                                                <div className="d-inline-block">
-                                                    <td className={paddingClass}>
-                                                        <input type="text" id={`step-${stepIndex}`} name={stepIndex++} className="input-field bol-input" onBlur={this.handleChange} readOnly></input>
-                                                    </td>
-                                                    <br className="d-md-none d-block"/>
-                                                </div>
-                                            );
-                                        }
-                                        
-                                    }
-                                    return(
-                                        <tr className="d-md-flex mb-4 pb-2">
-                                            <div className="d-md-inline-block">
-                                                <th className="pr-5 table-heading">{`Line-${index+1}`}</th>
-                                                <br className="d-md-none d-block"/>
-                                            </div>
-                                            {items}
-                                            <br/>
-                                        </tr>
-                                    )
-                                })}
-                                <tr className="d-md-flex justify-content-center ml-1 mr-md-5 mr-1">
+                    <form onSubmit={this.handleSubmit} className="matra-box">
+                        <table className="d-flex flex-column">
+                            <GenerateForm stepIndex="1" selectedTaalForm={this.state.selectedTaalForm } handleBolEnteredFromSnippet={this.handleBolEnteredFromSnippet}/>
+                            {this.state.generatorFormList}
+                            <tr className="d-md-flex justify-content-between align-items-center">
+                                <div className="d-flex justify-content-center justify-content-md-start align-items-center w-100 text-md-left text-center mb-md-0 mb-4">
+                                <i class="fa fa-2x fa-minus-circle mr-2 plus-minus-buttons" onClick={this.handleRemoveGeneratorForm}></i>
+                                <p className="px-3 py-2 mb-0 counter">{this.state.generatorFormList.length+1}</p>
+                                <i class="fa fa-2x fa-plus-circle ml-2 plus-minus-buttons" onClick={this.handleAddGeneratorForm}></i>
+                                </div>
                                 <button type="submit" className="btn btn-grey col-md-6 col-12 d-flex align-items-center justify-content-center mb-md-0 mb-3" id="show-contact-us-form-third-step">Generate &amp; Download</button>
-                                </tr>
-                            </table>                        
-                        </form>
+                            </tr>
+                        </table>                        
+                    </form>
                     </div>
                 </div>
             </div>
@@ -237,3 +216,10 @@ export default class Generator extends React.Component {
     }
   }  
 }
+const mapStateToProps = (state) => {
+    return {
+        bolToProps: state
+    }
+}
+
+export default connect(mapStateToProps) (Generator);

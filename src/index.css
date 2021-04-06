@@ -115,8 +115,25 @@ input[type=number] {
   color: #222;
   font-family: 'DhwaniAlegreya';
 }
+.table-heading-container{
+  width: 15%;
+}
 .footer-link{
   text-decoration: none !important;
+}
+.plus-minus-buttons{
+  color: #222;
+  cursor: pointer;
+}
+.form-border{
+  border-top: 1px solid #fff;
+  padding-top: 4% !important;
+}
+.counter{
+  background-color: #2222221f;
+  border-radius: 5px;
+  color: #222;
+  font-weight: bold;
 }
 @media (max-width: 767px){
   .backdrop-image{
@@ -130,18 +147,11 @@ input[type=number] {
   }
   .generator-box-margin{
     margin: 0% 1%;
-  } 
-  .bol-input{
-    width: 180% !important;
   }
-}
-@media (max-width: 360px){
-  .bol-input{
-    width: 150% !important;
+  .matra-box{
+    width: 100%;
   }
-}
-@media (max-width: 320px){
-  .bol-input{
-    width: 140% !important;
+  .table-heading-container{
+    width: 100%;
   }
 }
