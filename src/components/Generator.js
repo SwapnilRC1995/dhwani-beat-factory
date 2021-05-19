@@ -100,8 +100,8 @@ class Generator extends React.Component {
                 bolEntered: this.state.bolEntered
             })
             if(this.state.bolEntered !== null ){
-               axios.post('https://www.dhwanibeatfactoryclient.tk/create-pdf', this.state)
-                .then(() => axios.get('https://www.dhwanibeatfactoryclient.tk/fetch-pdf', {responseType: 'blob'}))
+               axios.post('http://localhost:5000/create-pdf', this.state)
+                .then(() => axios.get('http://localhost:5000/fetch-pdf', {responseType: 'blob'}))
                 .then((res) => {
                     const pdfBlob = new Blob([res.data], {type: 'application/pdf'});
                     saveAs(pdfBlob, `${this.state.selectedTaalForm.name}.pdf`);
@@ -109,7 +109,7 @@ class Generator extends React.Component {
                 .then(() => {
                     window.location.reload();
                 })
-                .then(() => axios.get('https://www.dhwanibeatfactoryclient.tk/delete-pdf'))
+                .then(() => axios.get('http://localhost:5000/delete-pdf'))
             }else{
                 console.log("No values entered")
             }          
