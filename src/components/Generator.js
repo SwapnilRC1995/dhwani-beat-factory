@@ -18,7 +18,7 @@ class Generator extends React.Component {
             {
                 name: "Dhamar",
                 matra: "14",
-                step: [3,4,3,4]
+                step: [5,2,3,4]
             },
             {
                 name: "Ada Chautaal",
